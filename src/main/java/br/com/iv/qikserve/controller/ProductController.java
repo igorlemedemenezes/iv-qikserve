@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.iv.qikserve.model.ProductModel;
+import br.com.iv.qikserve.service.ProductService;
 
 @RestController
 @RequestMapping(value = "/product")

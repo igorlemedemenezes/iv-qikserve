@@ -1,4 +1,4 @@
-package br.com.iv.qikserve.controller;
+package br.com.iv.qikserve.service;
 
 import java.util.List;
 
