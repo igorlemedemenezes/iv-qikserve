@@ -37,7 +37,18 @@ public class BasketService {
 //		Optional<BasketModel> = repo.findById(id);
 		return new BasketModel();
 	}
+
+	public void checkoutBasket(Integer id) {
+		BasketModel basket = findById(id);
+//		basket.getProducts().stream().
+	}
 	
+	public Double getTotalPrice(BasketModel basket) {
+		return null;
+	}
 	
+	public Double calculateTotal(BasketModel basket) {
+		return null;
+	}
 	
 }
