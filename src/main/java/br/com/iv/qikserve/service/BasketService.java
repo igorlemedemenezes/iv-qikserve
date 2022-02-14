@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.model.ProductModel;
 
@@ -18,6 +19,9 @@ public class BasketService {
 	
 	@Autowired
 	private WiremockClient wiremockClient;
+	
+	@Autowired
+	private PromotionService promotionService;
 	
 	public BasketModel create(BasketModel basket) {
 		basket.getProducts().stream().map(product -> {
@@ -68,14 +72,22 @@ public class BasketService {
 	
 	public Double calculateTotal(BasketModel basket) {
 		
-//		basket.getProducts().stream().map(e -> {
-//			
-//			e.getPromotions().stream().map(e -> {
-//				
-//			})
-//			
-//			return null;
-//		}).collect(Collectors.toList());
+		basket.getProducts().stream().map(product -> {
+			
+			product.getPromotions().stream().map(promotion -> {
+				
+				if(promotion.getId().equals(PromotionTypeEnum.BUY_X_GET_Y_FREE.getCode())) 
+					promotionService.calculatorBuyXGetYFree(product, promotion));
+				else if(promotion.getId().equals(PromotionTypeEnum.QTY_BASED_PRICE_OVERRIDE.getCode())) 
+					promotionService.calculatorQtdBasedPriceOverride(product, promotion);
+				else if(promotion.getId().equals(PromotionTypeEnum.FLAT_PERCENT.getCode()))
+					promotionService.calculatorFlatPercent(product, promotion);
+				
+				return null;
+			});
+			
+			return null;
+		}).collect(Collectors.toList());
 		
 		return null;
 	}
