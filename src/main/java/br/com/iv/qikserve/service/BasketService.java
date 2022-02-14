@@ -67,7 +67,16 @@ public class BasketService {
 	}
 	
 	public Double calculateTotal(BasketModel basket) {
-//		basket.getProducts().stream().
+		
+//		basket.getProducts().stream().map(e -> {
+//			
+//			e.getPromotions().stream().map(e -> {
+//				
+//			})
+//			
+//			return null;
+//		}).collect(Collectors.toList());
+		
 		return null;
 	}
 	

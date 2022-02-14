@@ -13,4 +13,5 @@ public class ProductModel {
 	private List<PromotionModel> promotions;
 	private Integer amount;
 	
+	
 }
