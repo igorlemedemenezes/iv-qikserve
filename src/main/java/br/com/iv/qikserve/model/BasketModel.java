@@ -1,5 +1,6 @@
 package br.com.iv.qikserve.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -13,7 +14,7 @@ public class BasketModel {
 	
 	private Integer userId;
 	
-	private List<ProductModel> products;
+	private List<ProductModel> products = new ArrayList<>();
 	
 	
 	

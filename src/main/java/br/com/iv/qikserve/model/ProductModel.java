@@ -11,5 +11,6 @@ public class ProductModel {
 	private String name;
 	private Integer price;
 	private List<PromotionModel> promotions;
+	private Integer amount;
 	
 }

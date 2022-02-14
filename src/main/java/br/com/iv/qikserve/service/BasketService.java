@@ -1,5 +1,6 @@
 package br.com.iv.qikserve.service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,26 @@ public class BasketService {
 	public BasketModel addItem(BasketDTO basketDTO) {
 		BasketModel basket = findById(basketDTO.getBasketId());
 		ProductModel product = wiremockClient.getProductId(basketDTO.getProduct().getId());
-		basket.getProducts().add(product);
+		addNewProductToBasket(basketDTO, basket, product);
 		return basket;
+	}
+
+	private void addNewProductToBasket(BasketDTO basketDTO, BasketModel basket, ProductModel productRetrieved) {
+		Optional<ProductModel> product = null;
+		
+		if(basket.getProducts() != null) 
+			product = basket.getProducts().stream().filter(e -> e.getId().equals(basketDTO.getProduct().getId())).findAny();
+		
+		if(product != null && product.isPresent()) {
+			Integer totalAmount = product.get().getAmount()+basketDTO.getProduct().getAmount();
+			product.get().setAmount(totalAmount);
+		}
+		else {
+			productRetrieved.setAmount(basketDTO.getProduct().getAmount());
+			basket.getProducts().add(productRetrieved);
+			
+		}
+			
 	}
 
 	private BasketModel findById(Integer id) {
@@ -48,6 +67,7 @@ public class BasketService {
 	}
 	
 	public Double calculateTotal(BasketModel basket) {
+//		basket.getProducts().stream().
 		return null;
 	}
 	
