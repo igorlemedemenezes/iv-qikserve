@@ -5,21 +5,21 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.iv.qikserve.api.feignclient.UserClient;
-import br.com.iv.qikserve.model.ProductModel;
+import br.com.iv.qikserve.api.feignclient.WiremockClient;
+import br.com.iv.qikserve.dto.ProductDTO;
 
 @Service
 public class ProductService {
 
 	@Autowired
-	private UserClient userClient;
+	private WiremockClient wiremockClient;
 	
-	public List<ProductModel> getProducts() {
-		return userClient.getProducts();
+	public List<ProductDTO> getProducts() {
+		return wiremockClient.getProducts();
 	}
 
-	public ProductModel getProduct(String id) {
-		return userClient.getProductId(id);
+	public ProductDTO getProduct(String id) {
+		return wiremockClient.getProductId(id);
 	}
 	
 }
