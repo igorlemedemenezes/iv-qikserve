@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.iv.qikserve.dto.ProductDTO;
+import br.com.iv.qikserve.model.ProductModel;
 import br.com.iv.qikserve.service.ProductService;
 
 @RestController
@@ -20,12 +20,12 @@ public class ProductController {
 	private ProductService productService;
 	
 	@GetMapping
-	private ResponseEntity<List<ProductDTO>> getProducts(){
+	private ResponseEntity<List<ProductModel>> getProducts(){
 		return ResponseEntity.ok().body(productService.getProducts());
 	}
 	
 	@GetMapping("/{id}")
-	private ResponseEntity<ProductDTO> getProduct(@PathVariable("id") String id){
+	private ResponseEntity<ProductModel> getProduct(@PathVariable("id") String id){
 		return ResponseEntity.ok().body(productService.getProduct(id));
 	}
 	

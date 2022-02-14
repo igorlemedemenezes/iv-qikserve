@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
-import br.com.iv.qikserve.dto.ProductDTO;
+import br.com.iv.qikserve.model.ProductModel;
 
 @Service
 public class ProductService {
@@ -14,11 +14,11 @@ public class ProductService {
 	@Autowired
 	private WiremockClient wiremockClient;
 	
-	public List<ProductDTO> getProducts() {
+	public List<ProductModel> getProducts() {
 		return wiremockClient.getProducts();
 	}
 
-	public ProductDTO getProduct(String id) {
+	public ProductModel getProduct(String id) {
 		return wiremockClient.getProductId(id);
 	}
 	

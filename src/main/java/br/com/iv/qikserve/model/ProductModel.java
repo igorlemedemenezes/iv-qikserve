@@ -1,17 +1,13 @@
 package br.com.iv.qikserve.model;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 
 @Data
 public class ProductModel {
 
-	@NotNull
-	private String productId;
-	
-	@NotNull
+	private String id;
+	private String name;
+	private Integer price;
 	private Integer amount;
 	
 }
