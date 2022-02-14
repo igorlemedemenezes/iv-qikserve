@@ -9,5 +9,6 @@ public class PromotionModel {
 	private String type;
 	private Integer required_qty;
 	private Double price;
+	private Integer amount;
 	
 }
