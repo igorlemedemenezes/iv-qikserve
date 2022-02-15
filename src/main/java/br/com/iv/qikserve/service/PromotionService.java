@@ -11,43 +11,47 @@ public class PromotionService {
 
 	private final Integer FLAT_PERCENT = 10;
 	private final Integer ONE_HUNDRED_PERCENT = 100;
-	
+	private final String DECIMAL_FORMAT_2_DECIMAL_PLACES = "##0.00";
 //	 
 	/*
 	 *  if qty is less the amount return productPirce * amount example: qtd 1 * price. 
 	 *  otherwise  
 	 *  calculate the logic
 	 *  */
-	public Integer calculatorBuyXGetYFree(ProductModel product, PromotionModel promotion) {
+	public Double calculatorBuyXGetYFree(ProductModel product, PromotionModel promotion) {
+		
+		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice());
 		
 		if(product.getAmount() < promotion.getRequired_qty())
-			return product.getPrice() * product.getAmount();
+			return priceInDouble * product.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
-		Integer valueMatchedWithTheRule = product.getPrice() * qtyMatchedWithTheRule;
+		Double valueMatchedWithTheRule = priceInDouble * qtyMatchedWithTheRule;
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
-		Integer valueDoesntMatchWithTheRule = product.getPrice() * qtyDoesntMatchWithTheRulePromotion;
+		Double valueDoesntMatchWithTheRule = priceInDouble * qtyDoesntMatchWithTheRulePromotion;
 
 //		todo check which rule use.
 //		Integer value = (product.getAmount() * product.getPrice()) - (product.getPrice() * promotion.getFree_qty());
 		
-		return valueMatchedWithTheRule + valueDoesntMatchWithTheRule;
+		return DoubleTools.decimalFormat(DECIMAL_FORMAT_2_DECIMAL_PLACES, valueMatchedWithTheRule + valueDoesntMatchWithTheRule) ;
 		
 	}
 
-	public Integer calculatorQtdBasedPriceOverride(ProductModel product, PromotionModel promotion) {
+	public Double calculatorQtdBasedPriceOverride(ProductModel product, PromotionModel promotion) {
+
+		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice());
 		
 		if(product.getAmount() < promotion.getRequired_qty())
-			return product.getPrice() * product.getAmount();
+			return priceInDouble * product.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
-		Integer valueMatchedWithTheRule = promotion.getPrice() * qtyMatchedWithTheRule;
+		Double valueMatchedWithTheRule = priceInDouble * qtyMatchedWithTheRule;
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
-		Integer valueDoesntMatchWithTheRule = product.getPrice() * qtyDoesntMatchWithTheRulePromotion;
+		Double valueDoesntMatchWithTheRule = priceInDouble * qtyDoesntMatchWithTheRulePromotion;
 		
-		return valueMatchedWithTheRule + valueDoesntMatchWithTheRule; 
+		return DoubleTools.decimalFormat(DECIMAL_FORMAT_2_DECIMAL_PLACES, valueMatchedWithTheRule + valueDoesntMatchWithTheRule); 
 		
 	}
 
@@ -58,7 +62,7 @@ public class PromotionService {
 		if(product.getAmount() < promotion.getAmount())
 			return amount;
 		
-		return amount - (amount * FLAT_PERCENT/ONE_HUNDRED_PERCENT);
+		return DoubleTools.decimalFormat(DECIMAL_FORMAT_2_DECIMAL_PLACES, amount - (amount * FLAT_PERCENT/ONE_HUNDRED_PERCENT));
 		
 	}
 	

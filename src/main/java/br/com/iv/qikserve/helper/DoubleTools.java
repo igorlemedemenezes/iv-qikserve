@@ -14,7 +14,7 @@ public class DoubleTools {
 	
 	public static Double decimalFormat(String format, Double value) {
 		DecimalFormat df = new DecimalFormat(format);
-		return Double.parseDouble(df.format(value));
+		return Double.parseDouble(df.format(value).replace(",", "."));
 	}
 	
 	

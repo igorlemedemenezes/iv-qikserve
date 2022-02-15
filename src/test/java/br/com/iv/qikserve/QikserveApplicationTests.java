@@ -49,21 +49,21 @@ class QikserveApplicationTests {
 		
 		if(promotion.isPresent()) {
 			
-			Integer value = promotionService.calculatorBuyXGetYFree(product, promotion.get());
+			Double value = promotionService.calculatorBuyXGetYFree(product, promotion.get());
 			assertThat(value).isNotNull();
-			assertEquals(value, 999);
+			assertEquals(value, 9.99);
 			
-			Integer valueProduct1 = promotionService.calculatorBuyXGetYFree(product1, promotion.get());
+			Double valueProduct1 = promotionService.calculatorBuyXGetYFree(product1, promotion.get());
 			assertThat(valueProduct1).isNotNull();
-			assertEquals(valueProduct1, 999);
+			assertEquals(valueProduct1, 9.99);
 			
-			Integer valueProduct2 = promotionService.calculatorBuyXGetYFree(product2, promotion.get());
+			Double valueProduct2 = promotionService.calculatorBuyXGetYFree(product2, promotion.get());
 			assertThat(valueProduct2).isNotNull();
-			assertEquals(valueProduct2, 1998);
+			assertEquals(valueProduct2, 19.98);
 			
-			Integer valueProduct3 = promotionService.calculatorBuyXGetYFree(product3, promotion.get());
+			Double valueProduct3 = promotionService.calculatorBuyXGetYFree(product3, promotion.get());
 			assertThat(valueProduct3).isNotNull();
-			assertEquals(valueProduct3, 5994);
+			assertEquals(valueProduct3, 59.94);
 			
 		}
 		
@@ -94,21 +94,21 @@ class QikserveApplicationTests {
 		
 		if(promotion.isPresent()) {
 			
-			Integer value = promotionService.calculatorQtdBasedPriceOverride(product, promotion.get());
+			Double value = promotionService.calculatorQtdBasedPriceOverride(product, promotion.get());
 			assertThat(value).isNotNull();
-			assertEquals(value, 1099);
+			assertEquals(value, 10.99);
 			
-			Integer valueProduct1 = promotionService.calculatorQtdBasedPriceOverride(product1, promotion.get());
+			Double valueProduct1 = promotionService.calculatorQtdBasedPriceOverride(product1, promotion.get());
 			assertThat(valueProduct1).isNotNull();
-			assertEquals(valueProduct1, 1799);
+			assertEquals(valueProduct1, 17.99);
 			
-			Integer valueProduct2 = promotionService.calculatorQtdBasedPriceOverride(product2, promotion.get());
+			Double valueProduct2 = promotionService.calculatorQtdBasedPriceOverride(product2, promotion.get());
 			assertThat(valueProduct2).isNotNull();
-			assertEquals(valueProduct2, 2898);
+			assertEquals(valueProduct2, 28.98);
 			
-			Integer valueProduct3 = promotionService.calculatorQtdBasedPriceOverride(product3, promotion.get());
+			Double valueProduct3 = promotionService.calculatorQtdBasedPriceOverride(product3, promotion.get());
 			assertThat(valueProduct3).isNotNull();
-			assertEquals(valueProduct3, 10094);
+			assertEquals(valueProduct3, 100.94);
 			
 		}
 		
@@ -150,6 +150,10 @@ class QikserveApplicationTests {
 			Double valueProduct2 = promotionService.calculatorFlatPercent(product2, promotion.get());
 			assertThat(valueProduct2).isNotNull();
 			assertEquals(valueProduct2, 44.91);
+			
+			Double valueProduct3 = promotionService.calculatorFlatPercent(product3, promotion.get());
+			assertThat(valueProduct3).isNotNull();
+			assertEquals(valueProduct3, 49.40);
 		}
 		
 	}
