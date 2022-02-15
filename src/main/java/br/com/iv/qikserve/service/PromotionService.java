@@ -26,7 +26,7 @@ public class PromotionService {
 			return product.getPrice() * product.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
-		Integer valueMatchedWithTheRule = promotion.getPrice() * qtyMatchedWithTheRule;
+		Integer valueMatchedWithTheRule = product.getPrice() * qtyMatchedWithTheRule;
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
 		Integer valueDoesntMatchWithTheRule = product.getPrice() * qtyDoesntMatchWithTheRulePromotion;
