@@ -8,6 +8,11 @@ import br.com.iv.qikserve.model.PromotionModel;
 @Service
 public class PromotionService {
 
+	public static void main(String[] args) {
+		Integer rest = 3 % 2;
+		System.out.println(rest);
+	}
+	
 //	
 //	 
 	/*
@@ -18,10 +23,10 @@ public class PromotionService {
 	public Integer calculatorBuyXGetYFree(ProductModel product, PromotionModel promotion) {
 		
 		if(product.getAmount() < promotion.getRequired_qty())
-			return product.getPrice() * promotion.getAmount();
+			return product.getPrice() * product.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
-		Integer valueMatchedWithTheRule = product.getPrice() * qtyMatchedWithTheRule;
+		Integer valueMatchedWithTheRule = promotion.getPrice() * qtyMatchedWithTheRule;
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
 		Integer valueDoesntMatchWithTheRule = product.getPrice() * qtyDoesntMatchWithTheRulePromotion;
@@ -39,7 +44,7 @@ public class PromotionService {
 			return product.getPrice() * promotion.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
-		Integer valueMatchedWithTheRule = product.getPrice() * qtyMatchedWithTheRule;
+		Integer valueMatchedWithTheRule = promotion.getPrice() * qtyMatchedWithTheRule;
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
 		Integer valueDoesntMatchWithTheRule = product.getPrice() * qtyDoesntMatchWithTheRulePromotion;

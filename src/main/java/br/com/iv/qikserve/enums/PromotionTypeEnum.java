@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum PromotionTypeEnum {
 
-	QTY_BASED_PRICE_OVERRIDE("Dwt5F7KAhi"),
+	QTY_BASED_PRICE_OVERRIDE("ibt3EEYczW"),
 	BUY_X_GET_Y_FREE("ZRAwbsO2qM"),
 	FLAT_PERCENT("Gm1piPn7Fg");
 	
