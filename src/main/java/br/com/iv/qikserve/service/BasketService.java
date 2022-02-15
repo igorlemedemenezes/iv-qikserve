@@ -77,7 +77,7 @@ public class BasketService {
 			product.getPromotions().stream().map(promotion -> {
 				
 				if(promotion.getId().equals(PromotionTypeEnum.BUY_X_GET_Y_FREE.getCode())) 
-					promotionService.calculatorBuyXGetYFree(product, promotion));
+					promotionService.calculatorBuyXGetYFree(product, promotion);
 				else if(promotion.getId().equals(PromotionTypeEnum.QTY_BASED_PRICE_OVERRIDE.getCode())) 
 					promotionService.calculatorQtdBasedPriceOverride(product, promotion);
 				else if(promotion.getId().equals(PromotionTypeEnum.FLAT_PERCENT.getCode()))

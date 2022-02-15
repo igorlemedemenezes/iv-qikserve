@@ -8,7 +8,8 @@ public class PromotionModel {
 	private String id;
 	private String type;
 	private Integer required_qty;
-	private Double price;
+	private Integer price;
 	private Integer amount;
+	private Integer free_qty;
 	
 }
