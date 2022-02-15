@@ -2,18 +2,16 @@ package br.com.iv.qikserve.service;
 
 import org.springframework.stereotype.Service;
 
+import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.ProductModel;
 import br.com.iv.qikserve.model.PromotionModel;
 
 @Service
 public class PromotionService {
 
-	public static void main(String[] args) {
-		Integer rest = 3 % 2;
-		System.out.println(rest);
-	}
+	private final Integer FLAT_PERCENT = 10;
+	private final Integer ONE_HUNDRED_PERCENT = 100;
 	
-//	
 //	 
 	/*
 	 *  if qty is less the amount return productPirce * amount example: qtd 1 * price. 
@@ -40,8 +38,8 @@ public class PromotionService {
 
 	public Integer calculatorQtdBasedPriceOverride(ProductModel product, PromotionModel promotion) {
 		
-		if(product.getAmount() == promotion.getRequired_qty())
-			return product.getPrice() * promotion.getAmount();
+		if(product.getAmount() < promotion.getRequired_qty())
+			return product.getPrice() * product.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
 		Integer valueMatchedWithTheRule = promotion.getPrice() * qtyMatchedWithTheRule;
@@ -53,18 +51,17 @@ public class PromotionService {
 		
 	}
 
-	public Integer calculatorFlatPercent(ProductModel product, PromotionModel promotion) {
+	public Double calculatorFlatPercent(ProductModel product, PromotionModel promotion) {
 		
-		if(product.getAmount() < promotion.getRequired_qty())
-			return product.getPrice() * promotion.getAmount();
+		Double amount = DoubleTools.getValueWithSeparator(product.getPrice() * product.getAmount());  
 		
+		if(product.getAmount() < promotion.getAmount())
+			return amount;
 		
-		
-		return null;
-//		todo logic to promotion
+		return amount - (amount * FLAT_PERCENT/ONE_HUNDRED_PERCENT);
 		
 	}
-
+	
 	
 	
 }

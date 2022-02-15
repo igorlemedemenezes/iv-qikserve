@@ -114,5 +114,45 @@ class QikserveApplicationTests {
 		
 	}
 	
+	@Test
+	void callFunctionCalculatorFlatPercent_ShouldPass() {
+		
+		String idAmazingSalad = "C8GDyLrHJb";
+		
+		ProductModel product = wClient.getProductId(idAmazingSalad);
+		product.setPrice(499);
+		product.setAmount(1);
+		
+		ProductModel product1 = wClient.getProductId(idAmazingSalad);
+		product1.setPrice(499);
+		product1.setAmount(2);
+		
+		ProductModel product2 = wClient.getProductId(idAmazingSalad);
+		product2.setPrice(499);
+		product2.setAmount(10);
+
+		ProductModel product3 = wClient.getProductId(idAmazingSalad);
+		product3.setPrice(499);
+		product3.setAmount(11);
+		
+		Optional<PromotionModel> promotion = product.getPromotions().stream().filter(e -> e.getId().equals(PromotionTypeEnum.FLAT_PERCENT.getCode())).findAny();
+		
+		if(promotion.isPresent()) {
+			
+			Double value = promotionService.calculatorFlatPercent(product, promotion.get());
+			assertThat(value).isNotNull();
+			assertEquals(value, 4.99);
+			
+			Double valueProduct1 = promotionService.calculatorFlatPercent(product1, promotion.get());
+			assertThat(valueProduct1).isNotNull();
+			assertEquals(valueProduct1, 9.98);
+			
+			Double valueProduct2 = promotionService.calculatorFlatPercent(product2, promotion.get());
+			assertThat(valueProduct2).isNotNull();
+			assertEquals(valueProduct2, 44.91);
+		}
+		
+	}
+	
 
 }
