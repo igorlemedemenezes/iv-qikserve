@@ -11,7 +11,7 @@ public class PromotionService {
 
 	private final Integer FLAT_PERCENT = 10;
 	private final Integer ONE_HUNDRED_PERCENT = 100;
-	private final String DECIMAL_FORMAT_2_DECIMAL_PLACES = "##0.00";
+//	private final String DECIMAL_FORMAT_2_DECIMAL_PLACES = "##0.00";
 //	 
 	/*
 	 *  if qty is less the amount return productPirce * amount example: qtd 1 * price. 
@@ -34,24 +34,25 @@ public class PromotionService {
 //		todo check which rule use.
 //		Integer value = (product.getAmount() * product.getPrice()) - (product.getPrice() * promotion.getFree_qty());
 		
-		return DoubleTools.decimalFormat(DECIMAL_FORMAT_2_DECIMAL_PLACES, valueMatchedWithTheRule + valueDoesntMatchWithTheRule) ;
+		return valueMatchedWithTheRule + valueDoesntMatchWithTheRule;
 		
 	}
 
 	public Double calculatorQtdBasedPriceOverride(ProductModel product, PromotionModel promotion) {
 
 		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice());
+		Double promotionPriceInDouble = DoubleTools.getValueWithSeparator(promotion.getPrice());
 		
 		if(product.getAmount() < promotion.getRequired_qty())
 			return priceInDouble * product.getAmount();
 		
 		Integer qtyMatchedWithTheRule = product.getAmount() / promotion.getRequired_qty();
-		Double valueMatchedWithTheRule = priceInDouble * qtyMatchedWithTheRule;
+		Double valueMatchedWithTheRule = promotionPriceInDouble * qtyMatchedWithTheRule;
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
 		Double valueDoesntMatchWithTheRule = priceInDouble * qtyDoesntMatchWithTheRulePromotion;
 		
-		return DoubleTools.decimalFormat(DECIMAL_FORMAT_2_DECIMAL_PLACES, valueMatchedWithTheRule + valueDoesntMatchWithTheRule); 
+		return valueMatchedWithTheRule + valueDoesntMatchWithTheRule; 
 		
 	}
 
@@ -62,10 +63,8 @@ public class PromotionService {
 		if(product.getAmount() < promotion.getAmount())
 			return amount;
 		
-		return DoubleTools.decimalFormat(DECIMAL_FORMAT_2_DECIMAL_PLACES, amount - (amount * FLAT_PERCENT/ONE_HUNDRED_PERCENT));
+		return amount - (amount * FLAT_PERCENT/ONE_HUNDRED_PERCENT);
 		
 	}
-	
-	
 	
 }

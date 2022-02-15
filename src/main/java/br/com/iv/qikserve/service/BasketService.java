@@ -2,6 +2,7 @@ package br.com.iv.qikserve.service;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Service;
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
 import br.com.iv.qikserve.dto.BasketDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
+import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.model.ProductModel;
+import br.com.iv.qikserve.model.PromotionModel;
 
 @Service
 public class BasketService {
@@ -72,24 +75,30 @@ public class BasketService {
 	
 	public Double calculateTotal(BasketModel basket) {
 		
-		basket.getProducts().stream().map(product -> {
+		Double total = 0.0;
+		
+		for(ProductModel product : basket.getProducts()) {
 			
-			product.getPromotions().stream().map(promotion -> {
+			for(PromotionModel promotion: product.getPromotions()) {
 				
 				if(promotion.getId().equals(PromotionTypeEnum.BUY_X_GET_Y_FREE.getCode())) 
-					promotionService.calculatorBuyXGetYFree(product, promotion);
+					total += promotionService.calculatorBuyXGetYFree(product, promotion);
 				else if(promotion.getId().equals(PromotionTypeEnum.QTY_BASED_PRICE_OVERRIDE.getCode())) 
-					promotionService.calculatorQtdBasedPriceOverride(product, promotion);
+					total += promotionService.calculatorQtdBasedPriceOverride(product, promotion);
 				else if(promotion.getId().equals(PromotionTypeEnum.FLAT_PERCENT.getCode()))
-					promotionService.calculatorFlatPercent(product, promotion);
+					total += promotionService.calculatorFlatPercent(product, promotion);
 				
-				return null;
-			});
-			
-			return null;
-		}).collect(Collectors.toList());
+			}
+			if(product.getPromotions().isEmpty())
+				total += calculatePrice(product);
+		}
 		
-		return null;
+		return total;
+	}
+
+	private Double calculatePrice(ProductModel product) {
+		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice()) * product.getAmount();
+		return DoubleTools.decimalFormat("##0.00", priceInDouble);
 	}
 	
 }
