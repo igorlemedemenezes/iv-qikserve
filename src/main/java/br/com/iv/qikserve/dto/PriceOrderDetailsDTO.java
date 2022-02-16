@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PriceOrderDetailsDTO {
 
-	public Double total;
-	public Double totalPayable;
-	public Double totalPromos;
+	public String total;
+	public String totalPayable;
+	public String totalPromos;
 	public List<String> basketContents;
 	
 }

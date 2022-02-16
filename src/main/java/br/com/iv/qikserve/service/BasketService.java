@@ -14,13 +14,14 @@ import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
+import br.com.iv.qikserve.helper.StringUtils;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.model.ProductModel;
 import br.com.iv.qikserve.model.PromotionModel;
 
 @Service
 public class BasketService {
-
+	
 	private final String DECIMAL_FORMAT = "##0.00"; 
 	
 //	When add item, need check how much have at the itens.
@@ -126,12 +127,17 @@ public class BasketService {
 
 	public PriceOrderDetailsDTO getPriceOrder(Integer id) {
 		BasketModel b = findById(id);
+		
 		Double total = calculateTotal(b);
 		BasketTotalPayableDTO totalPayable = calculateTotalPayable(b);
 		Double totalPromos = calculateTotalPromo(total, totalPayable.getTotalPrice());
 		List<String> basketContents = getBasketContents(b);
 		
-		return new PriceOrderDetailsDTO(total, totalPayable.getTotalPrice(), totalPromos, basketContents);
+		return new PriceOrderDetailsDTO(
+				StringUtils.getValueWithSymbolFromUK(total), 
+				StringUtils.getValueWithSymbolFromUK(totalPayable.getTotalPrice()), 
+				StringUtils.getValueWithSymbolFromUK(totalPromos), 
+				basketContents);
 	}
 
 	private Double calculateTotalPromo(Double total, Double totalPrice) {

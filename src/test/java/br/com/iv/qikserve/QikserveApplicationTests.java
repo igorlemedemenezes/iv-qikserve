@@ -16,6 +16,7 @@ import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
+import br.com.iv.qikserve.helper.StringUtils;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.model.ProductModel;
 import br.com.iv.qikserve.model.PromotionModel;
@@ -258,9 +259,9 @@ class QikserveApplicationTests {
 		b.setProducts(products);
 		PriceOrderDetailsDTO priceOrder = basketService.getPriceOrder(1);
 		
-		assertEquals(priceOrder.getTotal(), 70.89);
-		assertEquals(priceOrder.getTotalPayable(), 56.91);
-		assertEquals(priceOrder.getTotalPromos(), 13.98);
+		assertEquals(priceOrder.getTotal(), StringUtils.getValueWithSymbolFromUK(70.89));
+		assertEquals(priceOrder.getTotalPayable(), StringUtils.getValueWithSymbolFromUK(56.91));
+		assertEquals(priceOrder.getTotalPromos(), StringUtils.getValueWithSymbolFromUK(13.98));
 	}
 	
 	
