@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
+import br.com.iv.qikserve.dto.BasketCheckoutDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
@@ -186,9 +187,9 @@ class QikserveApplicationTests {
 		
 		BasketModel b = new BasketModel();
 		b.setProducts(products);
-		Double total = basketService.calculateTotal(b);
+		BasketCheckoutDTO total = basketService.calculateTotal(b);
 		
-		assertEquals(DoubleTools.decimalFormat("##0.00", total), 56.91);
+		assertEquals(DoubleTools.decimalFormat("##0.00", total.getTotalPrice()), 56.91);
 		assertThat(total).isNotNull();
 	}
 
