@@ -30,9 +30,6 @@ public class PromotionService {
 		
 		Integer qtyDoesntMatchWithTheRulePromotion = product.getAmount() % promotion.getRequired_qty();
 		Double valueDoesntMatchWithTheRule = priceInDouble * qtyDoesntMatchWithTheRulePromotion;
-
-//		todo check which rule use.
-//		Integer value = (product.getAmount() * product.getPrice()) - (product.getPrice() * promotion.getFree_qty());
 		
 		return valueMatchedWithTheRule + valueDoesntMatchWithTheRule;
 		
@@ -64,7 +61,6 @@ public class PromotionService {
 			return amount;
 		
 		return amount - (amount * FLAT_PERCENT/ONE_HUNDRED_PERCENT);
-		
 	}
 	
 }

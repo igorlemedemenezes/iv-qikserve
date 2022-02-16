@@ -1,5 +1,7 @@
 package br.com.iv.qikserve.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,5 +10,6 @@ import lombok.Getter;
 public class BasketCheckoutDTO {
 
 	private Double totalPrice;
+	List<String> basketContents;
 	
 }

@@ -1,5 +1,7 @@
 package br.com.iv.qikserve.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -7,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
-import br.com.iv.qikserve.dto.BasketDTO;
 import br.com.iv.qikserve.dto.BasketCheckoutDTO;
+import br.com.iv.qikserve.dto.BasketDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
@@ -69,6 +71,17 @@ public class BasketService {
 		return calculateTotal(basket);
 	}
 	
+	public List<String> getBasketContents(BasketModel basket){
+		
+		List<String> basketContents = new ArrayList<String>();
+		
+		basket.getProducts().forEach(e -> {
+			basketContents.add(e.getAmount() + "x" + e.getName());
+		});
+		
+		return basketContents;
+	}
+	
 	public BasketCheckoutDTO calculateTotal(BasketModel basket) {
 		
 		Double total = 0.0;
@@ -90,7 +103,7 @@ public class BasketService {
 				total += calculatePrice(product);
 		}
 		
-		return new BasketCheckoutDTO(total);
+		return new BasketCheckoutDTO(total, getBasketContents(basket));
 	}
 
 	private Double calculatePrice(ProductModel product) {
