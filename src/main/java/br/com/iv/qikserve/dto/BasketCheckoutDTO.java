@@ -1,11 +1,12 @@
 package br.com.iv.qikserve.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class BasketCheckoutDTO {
 
-	
-	
+	private Double totalPrice;
 	
 }

@@ -1,6 +1,5 @@
 package br.com.iv.qikserve.model;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.validation.constraints.Min;

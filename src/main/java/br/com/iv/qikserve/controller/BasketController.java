@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.iv.qikserve.dto.BasketCheckoutDTO;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.dto.BasketCheckoutDTO;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.service.BasketService;
 
@@ -40,8 +41,8 @@ public class BasketController {
 
 	@PostMapping(value = "/checkout/{id}")
 	private ResponseEntity<BasketCheckoutDTO> checkoutBasket(@PathVariable("id") Integer id){
-		service.checkoutBasket(id);
-		return null;
+		BasketCheckoutDTO totalPrice = service.checkoutBasket(id);
+		return ResponseEntity.ok().body(totalPrice);
 	}
 	
 }

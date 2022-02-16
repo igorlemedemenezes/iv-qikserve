@@ -2,13 +2,13 @@ package br.com.iv.qikserve.service;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.dto.BasketCheckoutDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
@@ -64,16 +64,12 @@ public class BasketService {
 		return new BasketModel();
 	}
 
-	public void checkoutBasket(Integer id) {
+	public BasketCheckoutDTO checkoutBasket(Integer id) {
 		BasketModel basket = findById(id);
-//		basket.getProducts().stream().
+		return calculateTotal(basket);
 	}
 	
-	public Double getTotalPrice(BasketModel basket) {
-		return null;
-	}
-	
-	public Double calculateTotal(BasketModel basket) {
+	public BasketCheckoutDTO calculateTotal(BasketModel basket) {
 		
 		Double total = 0.0;
 		
@@ -88,12 +84,13 @@ public class BasketService {
 				else if(promotion.getId().equals(PromotionTypeEnum.FLAT_PERCENT.getCode()))
 					total += promotionService.calculatorFlatPercent(product, promotion);
 				
+				
 			}
 			if(product.getPromotions().isEmpty())
 				total += calculatePrice(product);
 		}
 		
-		return total;
+		return new BasketCheckoutDTO(total);
 	}
 
 	private Double calculatePrice(ProductModel product) {

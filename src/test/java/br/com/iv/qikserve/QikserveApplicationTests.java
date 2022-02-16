@@ -191,6 +191,5 @@ class QikserveApplicationTests {
 		assertEquals(DoubleTools.decimalFormat("##0.00", total), 56.91);
 		assertThat(total).isNotNull();
 	}
-	
 
 }
