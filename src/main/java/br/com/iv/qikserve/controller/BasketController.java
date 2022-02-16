@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.iv.qikserve.dto.BasketCheckoutDTO;
+import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.service.BasketService;
 
@@ -40,9 +41,16 @@ public class BasketController {
 	}
 
 	@GetMapping(value = "/checkout/{id}")
-	private ResponseEntity<BasketCheckoutDTO> checkoutBasket(@PathVariable("id") Integer id){
-		BasketCheckoutDTO totalPrice = service.checkoutBasket(id);
-		return ResponseEntity.ok().body(totalPrice);
+	private ResponseEntity<BasketTotalPayableDTO> checkoutBasket(@PathVariable("id") Integer id){
+		BasketTotalPayableDTO totalPayable = service.checkoutBasketWithTotalPayable(id);
+		return ResponseEntity.ok().body(totalPayable);
 	}
+	
+	@GetMapping(value = "/details-order/{id}")
+	private ResponseEntity<PriceOrderDetailsDTO> priceOrderDetails(@PathVariable("id") Integer id){
+		PriceOrderDetailsDTO details = service.getPriceOrder(id);
+		return ResponseEntity.ok().body(details);
+	}
+	
 	
 }

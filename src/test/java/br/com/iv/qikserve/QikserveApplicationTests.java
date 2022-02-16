@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
-import br.com.iv.qikserve.dto.BasketCheckoutDTO;
+import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
@@ -160,6 +160,40 @@ class QikserveApplicationTests {
 	}
 	
 	@Test
+	void callFunctionCalculateTotalPayable_ShouldPass() {
+		
+		String idAmazingSalad = "C8GDyLrHJb";
+		String idAmazingPizza = "Dwt5F7KAhi";
+		String idAmazingBurger = "PWWe3w1SDU";
+		String idFries = "4MB7UfpTQs";
+		List<ProductModel> products = new ArrayList<>();
+		
+		ProductModel pizza = wClient.getProductId(idAmazingPizza);
+		pizza.setAmount(3);
+
+		ProductModel burguer = wClient.getProductId(idAmazingBurger);
+		burguer.setAmount(2);
+		
+		ProductModel salad = wClient.getProductId(idAmazingSalad);
+		salad.setAmount(2);
+		
+		ProductModel fries = wClient.getProductId(idFries);
+		fries.setAmount(4);
+
+		products.add(pizza);
+		products.add(burguer);
+		products.add(salad);
+		products.add(fries);
+		
+		BasketModel b = new BasketModel();
+		b.setProducts(products);
+		BasketTotalPayableDTO total = basketService.calculateTotalPayable(b);
+		
+		assertEquals(DoubleTools.decimalFormat("##0.00", total.getTotalPrice()), 56.91);
+		assertThat(total).isNotNull();
+	}
+
+	@Test
 	void callFunctionCalculateTotal_ShouldPass() {
 		
 		String idAmazingSalad = "C8GDyLrHJb";
@@ -187,10 +221,10 @@ class QikserveApplicationTests {
 		
 		BasketModel b = new BasketModel();
 		b.setProducts(products);
-		BasketCheckoutDTO total = basketService.calculateTotal(b);
+		Double total = basketService.calculateTotal(b);
 		
-		assertEquals(DoubleTools.decimalFormat("##0.00", total.getTotalPrice()), 56.91);
+		assertEquals(total, 70.89);
 		assertThat(total).isNotNull();
 	}
-
+	
 }

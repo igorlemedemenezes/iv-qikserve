@@ -1,15 +1,11 @@
 package br.com.iv.qikserve.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class BasketCheckoutDTO {
+public class BasketTotalPayableDTO {
 
 	private Double totalPrice;
-	List<String> basketContents;
-	
 }

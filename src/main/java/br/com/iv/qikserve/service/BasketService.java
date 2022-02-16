@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
-import br.com.iv.qikserve.dto.BasketCheckoutDTO;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
+import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
@@ -20,6 +21,8 @@ import br.com.iv.qikserve.model.PromotionModel;
 @Service
 public class BasketService {
 
+	private final String DECIMAL_FORMAT = "##0.00"; 
+	
 //	When add item, need check how much have at the itens.
 	
 	@Autowired
@@ -66,9 +69,9 @@ public class BasketService {
 		return new BasketModel();
 	}
 
-	public BasketCheckoutDTO checkoutBasket(Integer id) {
+	public BasketTotalPayableDTO checkoutBasketWithTotalPayable(Integer id) {
 		BasketModel basket = findById(id);
-		return calculateTotal(basket);
+		return calculateTotalPayable(basket);
 	}
 	
 	public List<String> getBasketContents(BasketModel basket){
@@ -80,9 +83,19 @@ public class BasketService {
 		});
 		
 		return basketContents;
+
 	}
 	
-	public BasketCheckoutDTO calculateTotal(BasketModel basket) {
+	public Double calculateTotal(BasketModel basket) {
+		
+		return  DoubleTools.decimalFormat(DECIMAL_FORMAT, 
+				basket.getProducts()
+					.stream()
+					.mapToDouble(product -> (product.getAmount() * DoubleTools.getValueWithSeparator(product.getPrice())))
+					.sum());
+	}
+	
+	public BasketTotalPayableDTO calculateTotalPayable(BasketModel basket) {
 		
 		Double total = 0.0;
 		
@@ -100,15 +113,29 @@ public class BasketService {
 				
 			}
 			if(product.getPromotions().isEmpty())
-				total += calculatePrice(product);
+				total += calculatePriceWithOutPromotion(product);
 		}
 		
-		return new BasketCheckoutDTO(total, getBasketContents(basket));
-	}
-
-	private Double calculatePrice(ProductModel product) {
-		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice()) * product.getAmount();
-		return DoubleTools.decimalFormat("##0.00", priceInDouble);
+		return new BasketTotalPayableDTO(total);
 	}
 	
+	private Double calculatePriceWithOutPromotion(ProductModel product) {
+		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice()) * product.getAmount();
+		return DoubleTools.decimalFormat(DECIMAL_FORMAT, priceInDouble);
+	}
+
+	public PriceOrderDetailsDTO getPriceOrder(Integer id) {
+		BasketModel basket = findById(id);
+		
+		Double total = calculateTotal(basket);
+		BasketTotalPayableDTO totalPayable = calculateTotalPayable(basket);
+		Double totalPromos = calculateTotalPromo(total, totalPayable.getTotalPrice());
+		List<String> basketContents = getBasketContents(basket);
+		
+		return new PriceOrderDetailsDTO(total, totalPayable.getTotalPrice(), totalPromos, basketContents);
+	}
+
+	private Double calculateTotalPromo(Double total, Double totalPrice) {
+		return total - totalPrice;
+	}
 }
