@@ -79,7 +79,7 @@ public class BasketService {
 		List<String> basketContents = new ArrayList<String>();
 		
 		basket.getProducts().forEach(e -> {
-			basketContents.add(e.getAmount() + "x" + e.getName());
+			basketContents.add(e.getAmount() + "x " + e.getName());
 		});
 		
 		return basketContents;
@@ -116,7 +116,7 @@ public class BasketService {
 				total += calculatePriceWithOutPromotion(product);
 		}
 		
-		return new BasketTotalPayableDTO(total);
+		return new BasketTotalPayableDTO(DoubleTools.decimalFormat(DECIMAL_FORMAT, total));
 	}
 	
 	private Double calculatePriceWithOutPromotion(ProductModel product) {
@@ -125,17 +125,16 @@ public class BasketService {
 	}
 
 	public PriceOrderDetailsDTO getPriceOrder(Integer id) {
-		BasketModel basket = findById(id);
-		
-		Double total = calculateTotal(basket);
-		BasketTotalPayableDTO totalPayable = calculateTotalPayable(basket);
+		BasketModel b = findById(id);
+		Double total = calculateTotal(b);
+		BasketTotalPayableDTO totalPayable = calculateTotalPayable(b);
 		Double totalPromos = calculateTotalPromo(total, totalPayable.getTotalPrice());
-		List<String> basketContents = getBasketContents(basket);
+		List<String> basketContents = getBasketContents(b);
 		
 		return new PriceOrderDetailsDTO(total, totalPayable.getTotalPrice(), totalPromos, basketContents);
 	}
 
 	private Double calculateTotalPromo(Double total, Double totalPrice) {
-		return total - totalPrice;
+		return DoubleTools.decimalFormat(DECIMAL_FORMAT, total - totalPrice);
 	}
 }

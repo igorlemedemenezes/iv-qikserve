@@ -46,7 +46,7 @@ public class BasketController {
 		return ResponseEntity.ok().body(totalPayable);
 	}
 	
-	@GetMapping(value = "/details-order/{id}")
+	@GetMapping(value = "/order-details/{id}")
 	private ResponseEntity<PriceOrderDetailsDTO> priceOrderDetails(@PathVariable("id") Integer id){
 		PriceOrderDetailsDTO details = service.getPriceOrder(id);
 		return ResponseEntity.ok().body(details);

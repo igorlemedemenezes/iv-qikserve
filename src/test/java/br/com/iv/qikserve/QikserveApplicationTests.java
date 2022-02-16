@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
 import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
+import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.model.BasketModel;
@@ -226,5 +227,41 @@ class QikserveApplicationTests {
 		assertEquals(total, 70.89);
 		assertThat(total).isNotNull();
 	}
+	
+	@Test
+	void callFunctionGetPriceOrder_ShouldPass() {
+		
+		String idAmazingSalad = "C8GDyLrHJb";
+		String idAmazingPizza = "Dwt5F7KAhi";
+		String idAmazingBurger = "PWWe3w1SDU";
+		String idFries = "4MB7UfpTQs";
+		List<ProductModel> products = new ArrayList<>();
+		
+		ProductModel pizza = wClient.getProductId(idAmazingPizza);
+		pizza.setAmount(3);
+
+		ProductModel burguer = wClient.getProductId(idAmazingBurger);
+		burguer.setAmount(2);
+		
+		ProductModel salad = wClient.getProductId(idAmazingSalad);
+		salad.setAmount(2);
+		
+		ProductModel fries = wClient.getProductId(idFries);
+		fries.setAmount(4);
+
+		products.add(pizza);
+		products.add(burguer);
+		products.add(salad);
+		products.add(fries);
+		
+		BasketModel b = new BasketModel();
+		b.setProducts(products);
+		PriceOrderDetailsDTO priceOrder = basketService.getPriceOrder(1);
+		
+		assertEquals(priceOrder.getTotal(), 70.89);
+		assertEquals(priceOrder.getTotalPayable(), 56.91);
+		assertEquals(priceOrder.getTotalPromos(), 13.98);
+	}
+	
 	
 }
