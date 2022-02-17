@@ -27,17 +27,17 @@ public class BasketController {
 	@Autowired
 	private BasketService service;
 	
-	@PostMapping("/add")
-	private ResponseEntity<BasketModel> addItemToTheBasket(@RequestBody @NotNull BasketDTO basketDTO){
-		BasketModel basket = service.addItem(basketDTO);
-		return ResponseEntity.ok().body(basket);
-	}
-	
 	@PostMapping
 	private ResponseEntity<BasketModel> createBasket(@RequestBody @NotNull BasketModel basketModel){
 		BasketModel basket = service.create(basketModel);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(basket.getId()).toUri();
-		return ResponseEntity.created(uri).body(basket);
+		return ResponseEntity.created(uri).build();
+	}
+	
+	@PostMapping("/add")
+	private ResponseEntity<BasketModel> addItemToTheBasket(@RequestBody @NotNull BasketDTO basketDTO){
+		BasketModel basket = service.addItem(basketDTO);
+		return ResponseEntity.ok().body(null);
 	}
 
 	@GetMapping(value = "/checkout/{id}")

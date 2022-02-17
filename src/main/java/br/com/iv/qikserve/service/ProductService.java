@@ -7,10 +7,18 @@ import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
 import br.com.iv.qikserve.model.ProductModel;
+import br.com.iv.qikserve.repository.ProductRepository;
 
 @Service
 public class ProductService {
 
+	@Autowired
+	private ProductRepository repo;
+	
+	public ProductModel save(ProductModel p) {
+		return repo.save(p);
+	}
+	
 	@Autowired
 	private WiremockClient wiremockClient;
 	

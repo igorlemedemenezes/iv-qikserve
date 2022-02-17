@@ -13,11 +13,13 @@ import br.com.iv.qikserve.dto.BasketDTO;
 import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
+import br.com.iv.qikserve.exceptions.ObjectNotFoundException;
 import br.com.iv.qikserve.helper.DoubleTools;
 import br.com.iv.qikserve.helper.StringUtils;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.model.ProductModel;
 import br.com.iv.qikserve.model.PromotionModel;
+import br.com.iv.qikserve.repository.BasketRepository;
 
 @Service
 public class BasketService {
@@ -32,13 +34,30 @@ public class BasketService {
 	@Autowired
 	private PromotionService promotionService;
 	
-	public BasketModel create(BasketModel basket) {
-		basket.getProducts().stream().map(product -> {
-			return wiremockClient.getProductId(product.getId());
-		}).collect(Collectors.toList());
-//		todo save
-		return basket;
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private BasketRepository repo;
+	
+	public BasketModel save(BasketModel basket) {
+		return repo.save(basket);
 	}
+
+	public BasketModel create(BasketModel basket) {
+		
+		List<ProductModel> products = basket.getProducts().stream().map(e -> {
+			ProductModel product = wiremockClient.getProductId(e.getId());
+			product.setProductQty(e.getProductQty());
+			product.setBasket(basket);
+			return product;
+		}).collect(Collectors.toList());
+		
+		basket.setProducts(products);
+		
+		return repo.save(basket);
+	}
+	
 
 	public BasketModel addItem(BasketDTO basketDTO) {
 		BasketModel basket = findById(basketDTO.getBasketId());
@@ -47,27 +66,22 @@ public class BasketService {
 		return basket;
 	}
 
-	private void addNewProductToBasket(BasketDTO basketDTO, BasketModel basket, ProductModel productRetrieved) {
-		Optional<ProductModel> product = null;
+	private BasketModel addNewProductToBasket(BasketDTO basketDTO, BasketModel basket, ProductModel productRetrieved) {
 		
-		if(basket.getProducts() != null) 
-			product = basket.getProducts().stream().filter(e -> e.getId().equals(basketDTO.getProduct().getId())).findAny();
+		for(ProductModel product : basket.getProducts()) {
+			if(product.getId().equals(basketDTO.getProduct().getId())){
+				Integer totalAmount = product.getProductQty()+basketDTO.getProduct().getAmount();
+				product.setProductQty(totalAmount);
+				productService.save(product);
+				return basket;
+			}
+		}
 		
-		if(product != null && product.isPresent()) {
-			Integer totalAmount = product.get().getAmount()+basketDTO.getProduct().getAmount();
-			product.get().setAmount(totalAmount);
-		}
-		else {
-			productRetrieved.setAmount(basketDTO.getProduct().getAmount());
-			basket.getProducts().add(productRetrieved);
-			
-		}
-			
-	}
-
-	private BasketModel findById(Integer id) {
-//		Optional<BasketModel> = repo.findById(id);
-		return new BasketModel();
+		productRetrieved.setProductQty(basketDTO.getProduct().getAmount());
+		productRetrieved.setBasket(basket);
+		basket.getProducts().add(productRetrieved);
+		return save(basket);
+		
 	}
 
 	public BasketTotalPayableDTO checkoutBasketWithTotalPayable(Integer id) {
@@ -80,7 +94,7 @@ public class BasketService {
 		List<String> basketContents = new ArrayList<String>();
 		
 		basket.getProducts().forEach(e -> {
-			basketContents.add(e.getAmount() + "x " + e.getName());
+			basketContents.add(e.getProductQty() + "x " + e.getName());
 		});
 		
 		return basketContents;
@@ -92,7 +106,7 @@ public class BasketService {
 		return  DoubleTools.decimalFormat(DECIMAL_FORMAT, 
 				basket.getProducts()
 					.stream()
-					.mapToDouble(product -> (product.getAmount() * DoubleTools.getValueWithSeparator(product.getPrice())))
+					.mapToDouble(product -> (product.getProductQty() * DoubleTools.getValueWithSeparator(product.getPrice())))
 					.sum());
 	}
 	
@@ -121,7 +135,7 @@ public class BasketService {
 	}
 	
 	private Double calculatePriceWithOutPromotion(ProductModel product) {
-		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice()) * product.getAmount();
+		Double priceInDouble = DoubleTools.getValueWithSeparator(product.getPrice()) * product.getProductQty();
 		return DoubleTools.decimalFormat(DECIMAL_FORMAT, priceInDouble);
 	}
 
@@ -143,4 +157,14 @@ public class BasketService {
 	private Double calculateTotalPromo(Double total, Double totalPrice) {
 		return DoubleTools.decimalFormat(DECIMAL_FORMAT, total - totalPrice);
 	}
+	
+	private BasketModel findById(Integer id) {
+		Optional<BasketModel> basket = repo.findById(id);
+		
+		if(basket.isPresent()) 
+			return basket.get();
+		
+        throw new ObjectNotFoundException();
+	}
+	
 }
