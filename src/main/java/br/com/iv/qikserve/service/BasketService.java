@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
 import br.com.iv.qikserve.dto.AddItemDTO;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.dto.BasketFormDTO;
 import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
+import br.com.iv.qikserve.dto.ItemDTO;
 import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.enums.PromotionTypeEnum;
 import br.com.iv.qikserve.exceptions.ObjectNotFoundException;
@@ -23,6 +25,7 @@ import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.model.ProductModel;
 import br.com.iv.qikserve.model.PromotionModel;
 import br.com.iv.qikserve.repository.BasketRepository;
+import br.com.iv.qikserve.security.UserSS;
 
 @Service
 public class BasketService {
@@ -63,14 +66,14 @@ public class BasketService {
 	}
 
 	@Transactional
-	public AddItemDTO addItem(BasketDTO basketDTO) {
+	public AddItemDTO addItem(BasketFormDTO basketDTO) {
 		BasketModel basket = findById(basketDTO.getBasketId());
 		ProductModel product = wiremockClient.getProductId(basketDTO.getProduct().getId());
 		addNewProductToBasket(basketDTO, basket, product);
 		return new AddItemDTO();
 	}
 
-	private BasketModel addNewProductToBasket(BasketDTO basketDTO, BasketModel basket, ProductModel productRetrieved) {
+	private BasketModel addNewProductToBasket(BasketFormDTO basketDTO, BasketModel basket, ProductModel productRetrieved) {
 		
 		for(ProductModel product : basket.getProducts()) {
 			if(product.getId().equals(basketDTO.getProduct().getId())){
@@ -169,6 +172,17 @@ public class BasketService {
 			return basket.get();
 		
         throw new ObjectNotFoundException();
+	}
+
+	public ItemDTO getAllItens(Integer id) {
+		BasketModel basket = findById(id);
+		List<String> contents = getBasketContents(basket);
+		return new ItemDTO(contents);
+	}
+
+	public BasketDTO getLastBasketCreateByUser(Integer id) {
+		UserSS user = UserService.authenticated();
+		return new BasketDTO(user.getBasket());
 	}
 	
 }
