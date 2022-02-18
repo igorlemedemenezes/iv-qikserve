@@ -17,16 +17,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import br.com.iv.qikserve.security.JWTAuthenticationFilter;
+import br.com.iv.qikserve.security.JWTAuthorizationFilter;
+import br.com.iv.qikserve.security.JWTUtil;
+
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-//	@Autowired
-//	private UserDetailsService userDetailsService;
-//	
-//	@Autowired
-//	private JWTUtil jwtUtil;
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private JWTUtil jwtUtil;
 	
 	private static final String[] PUBLIC_MATCHERS_GET = {
 			"/basket/**",
@@ -35,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	private static final String[] PUBLIC_MATCHERS_POST = {
 			"/product/**",
-			"/basket/**"
+			"/basket/**",
+			"/admin/**"
 	};
 	
 	@Override
@@ -45,16 +50,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
 			.antMatchers(HttpMethod.GET,PUBLIC_MATCHERS_GET).permitAll()
 			.anyRequest().authenticated();
-//		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
-//		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
+		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 	}
 	
-//	@Override
-//	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-//	}
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+	}
 	
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
