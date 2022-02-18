@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.iv.qikserve.api.feignclient.WiremockClient;
+import br.com.iv.qikserve.dto.AddItemDTO;
 import br.com.iv.qikserve.dto.BasketDTO;
 import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
@@ -44,6 +47,7 @@ public class BasketService {
 		return repo.save(basket);
 	}
 
+	@Transactional
 	public BasketModel create(BasketModel basket) {
 		
 		List<ProductModel> products = basket.getProducts().stream().map(e -> {
@@ -57,27 +61,27 @@ public class BasketService {
 		
 		return repo.save(basket);
 	}
-	
 
-	public BasketModel addItem(BasketDTO basketDTO) {
+	@Transactional
+	public AddItemDTO addItem(BasketDTO basketDTO) {
 		BasketModel basket = findById(basketDTO.getBasketId());
 		ProductModel product = wiremockClient.getProductId(basketDTO.getProduct().getId());
 		addNewProductToBasket(basketDTO, basket, product);
-		return basket;
+		return new AddItemDTO();
 	}
 
 	private BasketModel addNewProductToBasket(BasketDTO basketDTO, BasketModel basket, ProductModel productRetrieved) {
 		
 		for(ProductModel product : basket.getProducts()) {
 			if(product.getId().equals(basketDTO.getProduct().getId())){
-				Integer totalAmount = product.getProductQty()+basketDTO.getProduct().getAmount();
+				Integer totalAmount = product.getProductQty()+basketDTO.getProduct().getProductQty();
 				product.setProductQty(totalAmount);
 				productService.save(product);
 				return basket;
 			}
 		}
 		
-		productRetrieved.setProductQty(basketDTO.getProduct().getAmount());
+		productRetrieved.setProductQty(basketDTO.getProduct().getProductQty());
 		productRetrieved.setBasket(basket);
 		basket.getProducts().add(productRetrieved);
 		return save(basket);

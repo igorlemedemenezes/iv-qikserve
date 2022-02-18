@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
+import br.com.iv.qikserve.dto.AddItemDTO;
 import br.com.iv.qikserve.dto.BasketDTO;
+import br.com.iv.qikserve.dto.BasketTotalPayableDTO;
 import br.com.iv.qikserve.dto.PriceOrderDetailsDTO;
 import br.com.iv.qikserve.model.BasketModel;
 import br.com.iv.qikserve.service.BasketService;
@@ -28,16 +29,16 @@ public class BasketController {
 	private BasketService service;
 	
 	@PostMapping
-	private ResponseEntity<BasketModel> createBasket(@RequestBody @NotNull BasketModel basketModel){
+	private ResponseEntity<Void> createBasket(@RequestBody @NotNull BasketModel basketModel){
 		BasketModel basket = service.create(basketModel);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(basket.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 	
 	@PostMapping("/add")
-	private ResponseEntity<BasketModel> addItemToTheBasket(@RequestBody @NotNull BasketDTO basketDTO){
-		BasketModel basket = service.addItem(basketDTO);
-		return ResponseEntity.ok().body(null);
+	private ResponseEntity<AddItemDTO> addItemToTheBasket(@RequestBody @NotNull BasketDTO basketDTO){
+		AddItemDTO item = service.addItem(basketDTO);
+		return ResponseEntity.ok().body(item);
 	}
 
 	@GetMapping(value = "/checkout/{id}")
@@ -51,6 +52,5 @@ public class BasketController {
 		PriceOrderDetailsDTO details = service.getPriceOrder(id);
 		return ResponseEntity.ok().body(details);
 	}
-	
 	
 }

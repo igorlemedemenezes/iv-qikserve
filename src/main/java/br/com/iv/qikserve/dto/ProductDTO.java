@@ -1,11 +1,18 @@
 package br.com.iv.qikserve.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ProductDTO {
 
 	private String id;
-	private Integer amount;
+	private String name;
+	private Integer productQty;
 	
 }
